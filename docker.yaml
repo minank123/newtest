@@ -1,0 +1,64 @@
+---
+- name: This sets up a Docker server
+  hosts: testvm-dev
+  remote_user: ec2-user
+  become: true
+  become_method: sudo
+  vars:
+      vol: /tmp/myefs/docker_volume/
+
+  tasks:
+  - name: set fact here
+    set_fact:
+      random_number: "{{ 100 | random }}"
+    run_once: yes
+  - name: Installing Docker
+    yum:
+      name: docker
+      state: present
+  - name: Start Docker Service
+    service:
+      name: docker
+      state: started
+  - name: Enable Docker Service
+    service:
+      name: docker
+      enabled: yes
+  - name: Checking local Directory to pull Dockerfile code snippet from gitlab
+    stat: 
+      path: /home/ec2-user/2041720
+    register: shell_result
+
+  - name: Cloning Gitlab snippet 
+    shell: git clone https://gitlab.com/snippets/2041720.git
+    when: not shell_result.stat.exists
+    register: my_output
+  - debug:
+      var: my_output
+
+  - name: Final check gitlab snippet
+    debug:
+      msg: "/home/ec2-user/2041720 directory exists"
+    when: shell_result.stat.exists
+
+  - name: Build Docker Image
+    args:
+      chdir: /home/ec2-user/2041720
+    shell: docker build -t myweb:v1.0 .
+    register: shell_result
+  - debug:
+      var: shell_result
+  - name: Creating test container
+    command: "{{ item }}"
+    with_items:
+    - docker run -itd  --name=test_machine320"{{ random_number }}" centos
+    - docker run -itd --name=webserver320"{{ random_number }}" -p 320"{{ random_number }}":80 -v "{{ vol }}":/var/www/html/  myweb:v1.0
+    register: shell_result
+  - debug:
+      var: shell_result
+  - name: Testing
+    shell: host myip.opendns.com resolver1.opendns.com | grep address |  awk '{print $4}'
+    register: shell_result
+  - debug:
+      msg: Testing URL is http://{{ shell_result.stdout }}:320{{ random_number }}/webapp/index_dev.jsp
+
