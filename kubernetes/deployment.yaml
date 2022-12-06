@@ -15,9 +15,11 @@ spec:
         app: myapp
     spec:
       containers:
-       - name: mywebserver
-         image: aamirs/radical-aug-2022
-         command: [ "/usr/sbin/httpd", "-D", "FOREGROUND" ] 
+       - name: redisserver
+         image: redis
+         COPY: redis.conf /usr/local/etc/redis/redis.conf
+         command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+         
          volumeMounts:
              - name: efs-pv
                mountPath: "/var/www/html"
