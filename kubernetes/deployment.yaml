@@ -15,11 +15,9 @@ spec:
         app: myapp
     spec:
       containers:
-       - name: httpds
-         image: httpd:2.4
-         COPY: ./public-html/ /usr/local/apache2/htdocs/
-         command: [ "-dit --name my-apache-app -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4" ]
-              
+       - name: mywebserver
+         image: aamirs/radical-aug-2022
+         command: [ "/usr/sbin/httpd", "-D", "FOREGROUND" ] 
          volumeMounts:
              - name: efs-pv
                mountPath: "/var/www/html"
