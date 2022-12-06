@@ -15,9 +15,10 @@ spec:
         app: myapp
     spec:
       containers:
-       - name: mywebserver
-         image: httpd:latest
-         command: [ "/usr/sbin/httpd", "-D", "FOREGROUND" ]
+       - name: myalpinelinux
+         image: alpine:3.14
+         command: [ "apk add --no-cache mysql-client" ]
+         ENTRYPOINT: ["mysql"]         
          volumeMounts:
              - name: efs-pv
                mountPath: "/var/www/html"
