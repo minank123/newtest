@@ -2,13 +2,13 @@ pipeline {
     agent any
 
      environment {
-        AWS_ACCESS_KEY_ID     = credentials('myawscreds')
-        AWS_SECRET_ACCESS_KEY = credentials('myawscreds')
+        AWS_ACCESS_KEY_ID     = AKIAULIKRZIK4EJ3KRJS
+        AWS_SECRET_ACCESS_KEY = 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
         nameSpace="prod"
-        eks_cluster="myeks"
-        aws_region="us-west-2"
-        lb_link="http://a9d1bb6a946584802a84c3148dc977a9-1752241709.us-west-2.elb.amazonaws.com/docker_volume"
-        efs_vol="/tmp/myefs/docker_volume/"
+        eks_cluster="eks"
+        aws_region="ap-south-1"
+        lb_link="a9b001b11f7544c0f806c108cd8d8500-1591101462.ap-south-1.elb.amazonaws.com"
+        efs_vol="efs"
     }
     
     stages {
