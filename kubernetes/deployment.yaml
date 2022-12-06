@@ -15,10 +15,11 @@ spec:
         app: myapp
     spec:
       containers:
-       - name: myalpinelinux
-         image: alpine:3.14
-         command: [ "apk add --no-cache mysql-client" ]
-         ENTRYPOINT: ["mysql"]         
+       - name: httpds
+         image: httpd:2.4
+         COPY: ./public-html/ /usr/local/apache2/htdocs/
+         command: [ "-dit --name my-apache-app -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4" ]
+              
          volumeMounts:
              - name: efs-pv
                mountPath: "/var/www/html"
