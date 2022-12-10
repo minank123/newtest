@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: prod
   name: frontend
+  namespace: prod
   labels:
     app: myapp
     type: frontend
@@ -15,18 +15,10 @@ spec:
         app: myapp
     spec:
       containers:
-       - name: redisserver
-         image: redis
-         COPY: redis.conf /usr/local/etc/redis/redis.conf
-         command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-         
-         volumeMounts:
-             - name: efs-pv
-               mountPath: "/var/www/html"
-      volumes:
-        - name: efs-pv
-          persistentVolumeClaim:
-          claimName: efs-claim
+      - name: mywebserver
+        FROM redis
+        COPY redis.conf /usr/local/etc/redis/redis.conf
+        CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
 
   selector:
     matchLabels:
