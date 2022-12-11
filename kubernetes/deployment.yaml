@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-deployment-nautilus
+  namespace: prod
+  labels:
+    app: myapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: httpd
+          image: httpd:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - name: efs-pv
+            mountPath: "/var/www/html"
+      volumes:
+        - name: efs-pv
+          persistentVolumeClaim:
+            claimName: efs-claim
